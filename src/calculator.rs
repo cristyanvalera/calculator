@@ -4,6 +4,8 @@ pub enum Operator {
     Sub,
     Mul,
     Div,
+    Pow,
+    Rem,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -57,6 +59,8 @@ impl Calculator {
                 '-' => tokens.push(Token::Op(Operator::Sub)),
                 '*' => tokens.push(Token::Op(Operator::Mul)),
                 '/' => tokens.push(Token::Op(Operator::Div)),
+                '^' => tokens.push(Token::Op(Operator::Pow)),
+                '%' => tokens.push(Token::Op(Operator::Rem)),
                 ' ' => {}
                 '\n' => {}
                 _ => return Err(Error::BadToken(c)),
@@ -129,10 +133,20 @@ impl Calculator {
                     let right = stack.pop().unwrap();
                     let left = stack.pop().unwrap();
                     if right == 0 as f32 {
+                        println!("La división por cero no está definida.");
                         return None;
-                    } else {
-                        stack.push(left / right);
                     }
+                    stack.push(left / right);
+                }
+                Token::Op(Operator::Pow) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push(f32::powf(right, left));
+                }
+                Token::Op(Operator::Rem) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push(left % right);
                 }
                 _ => {}
             }
