@@ -8,4 +8,7 @@ fn main() {
 
     let expr = Calculator::expression(tokens.unwrap());
     println!("{:?}", expr);
+
+    let value = Calculator::evaluate(expr);
+    println!("{}", value.unwrap());
 }

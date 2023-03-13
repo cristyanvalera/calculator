@@ -102,4 +102,46 @@ impl Calculator {
 
         queue
     }
+
+    pub fn evaluate(mut tokens: Vec<Token>) -> Option<f32> {
+        tokens.reverse();
+
+        let mut stack: Vec<f32> = Vec::new();
+        while let Some(token) = tokens.pop() {
+            match token {
+                Token::Number(n) => stack.push(n as f32),
+                Token::Op(Operator::Add) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push(left + right);
+                }
+                Token::Op(Operator::Sub) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push(left - right);
+                }
+                Token::Op(Operator::Mul) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push(left * right);
+                }
+                Token::Op(Operator::Div) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    if right == 0 as f32 {
+                        return None;
+                    } else {
+                        stack.push(left / right);
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        if stack.len() > 1 {
+            None
+        } else {
+            stack.pop()
+        }
+    }
 }
