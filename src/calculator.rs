@@ -33,7 +33,7 @@ impl Calculator {
                 '0'..='9' => match tokens.last_mut() {
                     Some(Token::Number(n)) => {
                         *n = *n * 10 + (c as u32 - 48);
-                    },
+                    }
                     _ => {
                         let digit = c as u32 - 48;
                         tokens.push(Token::Number(digit));
@@ -42,7 +42,7 @@ impl Calculator {
                 '(' => {
                     tokens.push(Token::Bracket('('));
                     parens.push(c);
-                },
+                }
                 ')' => {
                     tokens.push(Token::Bracket(')'));
                     if let Some(p) = parens.pop() {
@@ -50,16 +50,16 @@ impl Calculator {
                             return Err(Error::MismatchedParens);
                         }
                     } else {
-                        return Err(Error::MismatchedParens)
+                        return Err(Error::MismatchedParens);
                     }
-                },
+                }
                 '+' => tokens.push(Token::Op(Operator::Add)),
                 '-' => tokens.push(Token::Op(Operator::Sub)),
                 '*' => tokens.push(Token::Op(Operator::Mul)),
                 '/' => tokens.push(Token::Op(Operator::Div)),
-                ' ' => {},
-                '\n' => {},
-                _ => return Err(Error::BadToken(c))
+                ' ' => {}
+                '\n' => {}
+                _ => return Err(Error::BadToken(c)),
             }
         }
 
@@ -80,18 +80,18 @@ impl Calculator {
             match token {
                 Token::Number(_) => queue.push(token),
                 Token::Op(_) => {
-                    while ! stack.is_empty() && stack[stack.len() - 1] >= token {
+                    while !stack.is_empty() && stack[stack.len() - 1] >= token {
                         queue.push(stack.pop().unwrap());
                     }
                     stack.push(token);
-                },
+                }
                 Token::Bracket('(') => stack.push(token),
                 Token::Bracket(')') => {
-                    while ! stack.is_empty() && stack[stack.len() - 1] != Token::Bracket('(') {
+                    while !stack.is_empty() && stack[stack.len() - 1] != Token::Bracket('(') {
                         queue.push(stack.pop().unwrap());
                     }
                     stack.pop();
-                },
+                }
                 _ => {}
             }
         }
@@ -101,5 +101,5 @@ impl Calculator {
         }
 
         queue
-    } 
+    }
 }
