@@ -6,6 +6,7 @@ pub enum Operator {
     Div,
     Pow,
     Rem,
+    Perc,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -59,8 +60,9 @@ impl Calculator {
                 '-' => tokens.push(Token::Op(Operator::Sub)),
                 '*' => tokens.push(Token::Op(Operator::Mul)),
                 '/' => tokens.push(Token::Op(Operator::Div)),
-                '^' => tokens.push(Token::Op(Operator::Pow)),
-                '%' => tokens.push(Token::Op(Operator::Rem)),
+                'p' => tokens.push(Token::Op(Operator::Pow)),
+                'm' => tokens.push(Token::Op(Operator::Rem)),
+                '%' => tokens.push(Token::Op(Operator::Perc)),
                 ' ' => {}
                 '\n' => {}
                 _ => return Err(Error::BadToken(c)),
@@ -147,6 +149,11 @@ impl Calculator {
                     let right = stack.pop().unwrap();
                     let left = stack.pop().unwrap();
                     stack.push(left % right);
+                }
+                Token::Op(Operator::Perc) => {
+                    let right = stack.pop().unwrap();
+                    let left = stack.pop().unwrap();
+                    stack.push((right * left) / 100f32);
                 }
                 _ => {}
             }
